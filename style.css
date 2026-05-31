@@ -46,19 +46,156 @@ body::before {
     pointer-events: none;
 }
 
-/* Custom Cursor */
+/* Back to Top — UFO Shape */
+#back-to-top {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    width: 64px;
+    height: 50px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 0;
+}
+
+#back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 浮遊アニメーション */
+#back-to-top.visible {
+    animation: ufo-float 3s ease-in-out infinite;
+}
+
+@keyframes ufo-float {
+    0%, 100% { transform: translateX(-50%) translateY(0px); }
+    50%       { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* ドーム（上部半球） */
+.ufo-dome {
+    width: 28px;
+    height: 17px;
+    background: rgba(167, 139, 250, 0.1);
+    border: 1px solid rgba(167, 139, 250, 0.55);
+    border-bottom: none;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(167, 139, 250, 0.9);
+    position: relative;
+    z-index: 2;
+    box-shadow:
+        0 0 10px rgba(167, 139, 250, 0.25),
+        inset 0 3px 6px rgba(167, 139, 250, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+/* ソーサー（本体ディスク） */
+.ufo-saucer {
+    width: 64px;
+    height: 18px;
+    background: rgba(12, 18, 38, 0.95);
+    border: 1px solid rgba(167, 139, 250, 0.45);
+    border-radius: 50%;
+    display: block;
+    margin-top: -1px;
+    position: relative;
+    z-index: 1;
+    box-shadow:
+        0 0 14px rgba(167, 139, 250, 0.3),
+        0 0 28px rgba(167, 139, 250, 0.08),
+        0 3px 12px rgba(0, 0, 0, 0.6);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* ソーサーのライト（小さな光点） */
+.ufo-saucer::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(90deg,
+        rgba(167, 139, 250, 0.0) 0%,
+        rgba(167, 139, 250, 0.25) 30%,
+        rgba(167, 139, 250, 0.35) 50%,
+        rgba(167, 139, 250, 0.25) 70%,
+        rgba(167, 139, 250, 0.0) 100%
+    );
+}
+
+/* ビーム（光線） */
+.ufo-beam {
+    width: 18px;
+    height: 10px;
+    background: linear-gradient(to bottom,
+        rgba(167, 139, 250, 0.18),
+        rgba(167, 139, 250, 0.0)
+    );
+    border-radius: 0 0 50% 50%;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+/* ホバー */
+#back-to-top:hover .ufo-saucer {
+    border-color: rgba(167, 139, 250, 0.75);
+    box-shadow:
+        0 0 22px rgba(167, 139, 250, 0.55),
+        0 0 44px rgba(167, 139, 250, 0.18),
+        0 3px 12px rgba(0, 0, 0, 0.6);
+}
+
+#back-to-top:hover .ufo-dome {
+    box-shadow:
+        0 0 16px rgba(167, 139, 250, 0.45),
+        inset 0 3px 6px rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.8);
+}
+
+#back-to-top:hover .ufo-beam {
+    width: 26px;
+    height: 16px;
+    background: linear-gradient(to bottom,
+        rgba(167, 139, 250, 0.28),
+        rgba(167, 139, 250, 0.0)
+    );
+}
+
+/* Custom Cursor — Neon */
 #cursor-follower {
     position: fixed;
     top: 0;
     left: 0;
-    width: 24px;
-    height: 24px;
-    border: 1px solid var(--accent-color);
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(167, 139, 250, 0.8);
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
-    transition: transform 0.15s ease-out, background-color 0.15s, border-color 0.15s;
+    transition: transform 0.12s ease-out, box-shadow 0.2s ease;
     z-index: 9999;
+    box-shadow:
+        0 0 6px rgba(167, 139, 250, 0.5),
+        0 0 12px rgba(167, 139, 250, 0.2),
+        inset 0 0 4px rgba(167, 139, 250, 0.1);
 }
 
 .header {
@@ -98,12 +235,13 @@ body::before {
 }
 
 .hero {
-    min-height: 70vh;
+    min-height: 52vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     flex-direction: column;
+    padding-top: 80px;
 }
 
 .avatar-container {
@@ -144,8 +282,7 @@ h1 {
 }
 
 .content-section {
-    padding: 80px 0;
-    min-height: 50vh;
+    padding: 56px 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -207,6 +344,103 @@ footer {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.2);
     letter-spacing: 1px;
+}
+
+/* Nekomichi Project Links */
+.neko-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1.2rem;
+    background: transparent;
+    color: rgba(148, 163, 184, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    width: fit-content;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    cursor: none;
+}
+
+.neko-link--primary {
+    background: rgba(167, 139, 250, 0.07);
+    color: rgba(167, 139, 250, 0.85);
+    border-color: rgba(167, 139, 250, 0.28);
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.08);
+}
+
+/* スキャンライン */
+.neko-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(167, 139, 250, 0.12) 50%,
+        transparent 100%
+    );
+    transition: left 0s;
+    pointer-events: none;
+}
+
+/* ホバー時 */
+.neko-link:hover {
+    color: rgba(167, 139, 250, 0.95);
+    border-color: rgba(167, 139, 250, 0.45);
+    box-shadow: 0 0 16px rgba(167, 139, 250, 0.18);
+}
+
+.neko-link:hover::before {
+    left: 150%;
+    transition: left 0.55s ease;
+}
+
+/* ラッパー */
+.neko-link-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* ホバーメッセージ */
+.neko-msg {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: rgba(167, 139, 250, 0.7);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.25s ease 0.1s, transform 0.25s ease 0.1s, max-height 0.2s ease;
+    padding-left: 1.2rem;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.neko-link-wrap:hover .neko-msg {
+    opacity: 1;
+    max-height: 20px;
+    transform: translateY(0);
+}
+
+.neko-link__arrow {
+    opacity: 0.4;
+    flex-shrink: 0;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.neko-link:hover .neko-link__arrow {
+    opacity: 0.9;
+    transform: translate(2px, -2px);
 }
 
 /* Animations */

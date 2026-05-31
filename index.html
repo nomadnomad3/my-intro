@@ -11,6 +11,15 @@
 </head>
 <body>
     <div id="cursor-follower"></div>
+    <button id="back-to-top" aria-label="ページトップへ">
+        <span class="ufo-dome">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                <path d="M8 12V4M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <span class="ufo-saucer"></span>
+        <span class="ufo-beam"></span>
+    </button>
     <header class="header">
         <nav>
             <ul>
@@ -74,19 +83,31 @@
                 <div class="card">
                     <h3 style="font-size:1.1rem; font-weight:600; margin-bottom:0.5rem;">🐾 nekomichi</h3>
                     <p style="margin-bottom:1.2rem;">猫好きのための招待制コミュニティマップ。エンジニアでない私がAIツールのみで構築・運営しています。京都左京区スタート。</p>
-                    <div style="display:flex; flex-direction:column; gap:0.75rem;">
-                        <a href="https://nekomichi.vercel.app" target="_blank" rel="noopener noreferrer"
-                            style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.2rem; background:#C0392B; color:#fff; border-radius:8px; text-decoration:none; font-size:0.875rem; font-weight:600; width:fit-content;">
-                            🗺️ nekomichi アプリを開く
-                        </a>
-                        <a href="nekomichi-current.html" target="_blank"
-                            style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.2rem; background:transparent; color:#C0392B; border:1.5px solid #C0392B; border-radius:8px; text-decoration:none; font-size:0.875rem; font-weight:600; width:fit-content;">
-                            ✅ 実装済み仕様書
-                        </a>
-                        <a href="nekomichi-next.html" target="_blank"
-                            style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.2rem; background:transparent; color:#7C6BAB; border:1.5px solid #7C6BAB; border-radius:8px; text-decoration:none; font-size:0.875rem; font-weight:600; width:fit-content;">
-                            🚧 残りの開発（仕様書）
-                        </a>
+                    <div style="display:flex; flex-direction:column; gap:0.6rem; margin-top:0.5rem;">
+                        <div class="neko-link-wrap">
+                            <a href="https://nekomichi.vercel.app" target="_blank" rel="noopener noreferrer" class="neko-link neko-link--primary">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+                                <span>nekomichi — アプリを開く</span>
+                                <svg class="neko-link__arrow" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            </a>
+                            <span class="neko-msg">→ 猫の地図を開く</span>
+                        </div>
+                        <div class="neko-link-wrap">
+                            <a href="nekomichi-current.html" target="_blank" class="neko-link">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1"/><path d="M4 6h6M4 8h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+                                <span>実装済み仕様書</span>
+                                <svg class="neko-link__arrow" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            </a>
+                            <span class="neko-msg">→ AI × 人間の構築記録</span>
+                        </div>
+                        <div class="neko-link-wrap">
+                            <a href="nekomichi-next.html" target="_blank" class="neko-link">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1"/><path d="M4 5h6M4 7h6M4 9h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+                                <span>残りの開発（仕様書）</span>
+                                <svg class="neko-link__arrow" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            </a>
+                            <span class="neko-msg">→ 次の章、進行中</span>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -63,12 +63,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Background fade on scroll
+    const backToTop = document.getElementById('back-to-top');
+
     window.addEventListener('scroll', () => {
         const scrollY = window.scrollY;
-        // Fade in slowly (over 150% of viewport height)
+
+        // Background fade
         const maxScroll = window.innerHeight * 1.5;
         let opacity = (scrollY / maxScroll) * 0.35;
         if (opacity > 0.35) opacity = 0.35;
         document.documentElement.style.setProperty('--bg-opacity', opacity);
+
+        // Back to top: 300px以上スクロールで表示
+        if (backToTop) {
+            if (scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        }
     });
+
+    // Back to top click
+    if (backToTop) {
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 });
