@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nekomichi — 実装済み仕様書</title>
+  <style>
+    :root {
+      --brand:       #E8845A;
+      --brand-dark:  #C05A1F;
+      --purple:      #7C6BAB;
+      --green:       #4A7C59;
+      --bg:          #FAF9F7;
+      --bg-card:     #FFFFFF;
+      --border:      #E8E4DF;
+      --text:        #2C2A28;
+      --text-sub:    #7A7570;
+      --text-dim:    #B0ABA5;
+      --ok:          #4A7C59;
+      --warn:        #C0831F;
+      --err:         #C0392B;
+      --ok-bg:       #EAF3EC;
+      --warn-bg:     #FDF3E4;
+      --err-bg:      #FDECEA;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .site-header .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; text-decoration: none; color: var(--text); }
+    .site-header .logo span { font-size: 20px; }
+    .nav-links { display: flex; gap: 12px; }
+    .nav-links a {
+      font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
+      text-decoration: none; border: 1px solid var(--border); color: var(--text-sub);
+      transition: all .15s;
+    }
+    .nav-links a.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .nav-links a:hover:not(.active) { background: var(--bg); }
+
+    /* ── Layout ── */
+    .layout { display: flex; max-width: 1200px; margin: 0 auto; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px; flex-shrink: 0;
+      position: sticky; top: 57px; height: calc(100vh - 57px);
+      overflow-y: auto; padding: 24px 16px;
+      border-right: 1px solid var(--border);
+    }
+    .sidebar h3 { font-size: 10px; font-weight: 700; color: var(--text-dim); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; margin-top: 16px; }
+    .sidebar h3:first-child { margin-top: 0; }
+    .sidebar a { display: block; font-size: 13px; color: var(--text-sub); text-decoration: none; padding: 3px 8px; border-radius: 6px; }
+    .sidebar a:hover { background: var(--bg); color: var(--text); }
+
+    /* ── Main ── */
+    main { flex: 1; min-width: 0; padding: 32px 40px; }
+
+    /* ── Page title ── */
+    .page-title {
+      background: linear-gradient(135deg, #FFF4EE 0%, #F5F0FF 100%);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px 32px; margin-bottom: 32px;
+    }
+    .page-title .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--ok-bg); color: var(--ok); font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px; margin-bottom: 10px;
+    }
+    .page-title h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .page-title p { color: var(--text-sub); font-size: 14px; }
+    .page-title .meta { margin-top: 14px; display: flex; gap: 20px; flex-wrap: wrap; }
+    .page-title .meta span { font-size: 12px; color: var(--text-sub); }
+    .page-title .meta strong { color: var(--text); }
+
+    /* ── Section ── */
+    section { margin-bottom: 48px; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    .section-header .icon { font-size: 20px; }
+    .section-header h2 { font-size: 18px; font-weight: 700; }
+    .section-header .count { font-size: 12px; font-weight: 600; background: var(--bg); border: 1px solid var(--border); padding: 2px 8px; border-radius: 20px; color: var(--text-sub); }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #F5F3F0; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-sub); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FAFAF8; }
+
+    /* ── Status badges ── */
+    .badge-ok   { display: inline-flex; align-items: center; gap: 4px; background: var(--ok-bg);   color: var(--ok);   font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .badge-warn { display: inline-flex; align-items: center; gap: 4px; background: var(--warn-bg); color: var(--warn); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .badge-err  { display: inline-flex; align-items: center; gap: 4px; background: var(--err-bg);  color: var(--err);  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .badge-p0   { background: #FDECE8; color: var(--brand-dark); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .badge-p1   { background: #EEF0FF; color: #4A5299; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+
+    /* ── Code block ── */
+    pre {
+      background: #1E1C1A; color: #E8E4DF; padding: 16px 20px;
+      border-radius: 10px; overflow-x: auto; font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      line-height: 1.6; margin: 8px 0;
+    }
+    code { font-family: 'SF Mono', 'Fira Code', Consolas, monospace; font-size: 12px; background: #F0EDE8; padding: 1px 5px; border-radius: 4px; color: var(--brand-dark); }
+
+    /* ── Card ── */
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+    .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+
+    /* ── Stack grid ── */
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .stack-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; }
+    .stack-card .label { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+    .stack-card .value { font-size: 14px; font-weight: 600; color: var(--text); }
+    .stack-card .note  { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+
+    /* ── Route list ── */
+    .route-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .route-item:last-child { border-bottom: none; }
+    .route-path { font-family: 'SF Mono', Consolas, monospace; font-size: 13px; font-weight: 600; color: var(--purple); min-width: 140px; }
+    .route-desc { font-size: 13px; color: var(--text-sub); flex: 1; }
+
+    /* ── Note ── */
+    .note-box { background: var(--warn-bg); border: 1px solid #F0D09A; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #7A5A1F; margin: 12px 0; }
+    .note-box strong { font-weight: 700; }
+
+    /* ── Footer ── */
+    footer { text-align: center; padding: 32px 24px; color: var(--text-dim); font-size: 12px; border-top: 1px solid var(--border); margin-top: 48px; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <a class="logo" href="#">
+    <span>🐾</span> Nekomichi 仕様書
+  </a>
+  <nav class="nav-links">
+    <a href="NEKOMICHI-CURRENT.html" class="active">✅ 実装済み</a>
+    <a href="NEKOMICHI-NEXT.html">🚧 残り開発</a>
+    <a href="NEKOMICHI-WIREFRAMES.html">📐 ワイヤーフレーム</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>概要</h3>
+    <a href="#overview">プロダクト概要</a>
+    <a href="#stack">技術スタック</a>
+    <a href="#routes">ルート一覧</a>
+    <h3>実装済み機能</h3>
+    <a href="#feat-auth">認証</a>
+    <a href="#feat-map">マップ</a>
+    <a href="#feat-spots">スポット</a>
+    <a href="#feat-events">イベント</a>
+    <a href="#feat-members">メンバー</a>
+    <a href="#feat-mypage">マイページ</a>
+    <a href="#feat-pages">静的ページ</a>
+    <a href="#feat-i18n">多言語対応</a>
+    <h3>データ</h3>
+    <a href="#db">DBスキーマ（現在）</a>
+    <a href="#storage">ストレージ</a>
+    <a href="#env">環境変数</a>
+    <h3>技術メモ</h3>
+    <a href="#notes">実装メモ</a>
+  </aside>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Page title -->
+    <div class="page-title" id="overview">
+      <div class="badge">✅ 実装済み仕様書</div>
+      <h1>🐾 Nekomichi — 現在の実装</h1>
+      <p>このドキュメントは現在 Vercel 上で稼働している機能の仕様をまとめたものです。</p>
+      <div class="meta">
+        <span><strong>最終更新:</strong> 2026-05-27</span>
+        <span><strong>バージョン:</strong> v1.5（実装ベース）</span>
+        <span><strong>URL:</strong> <a href="https://nekomichi.vercel.app" target="_blank">nekomichi.vercel.app</a></span>
+        <span><strong>残り開発:</strong> <a href="NEKOMICHI-NEXT.html">NEKOMICHI-NEXT.html →</a></span>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <section id="stack">
+      <div class="section-header">
+        <span class="icon">⚙️</span>
+        <h2>技術スタック</h2>
+      </div>
+      <div class="stack-grid">
+        <div class="stack-card">
+          <div class="label">フレームワーク</div>
+          <div class="value">Next.js 16.2.6</div>
+          <div class="note">App Router / React 19 / TypeScript</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">スタイリング</div>
+          <div class="value">Tailwind CSS v4</div>
+          <div class="note">カスタムデザイントークン適用済み</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">地図</div>
+          <div class="value">Leaflet + react-leaflet</div>
+          <div class="note">OpenStreetMap（Google Maps移行予定）</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">認証 · DB</div>
+          <div class="value">Supabase</div>
+          <div class="note">Auth (Google OAuth) + PostgreSQL</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">ストレージ</div>
+          <div class="value">Supabase Storage</div>
+          <div class="note">spot-photos バケット（Public）</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">デプロイ</div>
+          <div class="value">Vercel</div>
+          <div class="note">main ブランチ自動デプロイ</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">アイコン</div>
+          <div class="value">@phosphor-icons/react</div>
+          <div class="note">SSR対応（/dist/ssr）</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">ジオコーディング</div>
+          <div class="value">国土地理院（GSI）API</div>
+          <div class="note">無料・APIキー不要（日本国内のみ）</div>
+        </div>
+        <div class="stack-card">
+          <div class="label">イベントデータ</div>
+          <div class="value">Google Sheets CSV</div>
+          <div class="note">5分キャッシュ。DBイベント移行予定</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Routes -->
+    <section id="routes">
+      <div class="section-header">
+        <span class="icon">🗺️</span>
+        <h2>ルート一覧</h2>
+      </div>
+      <div class="card">
+        <div class="route-item">
+          <div class="route-path">/</div>
+          <div><span class="badge-ok">✅ 完了</span></div>
+          <div class="route-desc">ランディングページ。コンセプト・機能紹介・CTA</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/vision</div>
+          <div><span class="badge-ok">✅ 完了</span></div>
+          <div class="route-desc">ビジョンページ。日英バイリンガル対応。Server Component</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/login</div>
+          <div><span class="badge-ok">✅ 完了</span></div>
+          <div class="route-desc">Googleログイン（Supabase Auth OAuth）</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/map</div>
+          <div><span class="badge-warn">⚠️ 部分完了</span></div>
+          <div class="route-desc">マップ（メイン）。保存ボタン・ベルアイコン・FABが未実装</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/events</div>
+          <div><span class="badge-ok">✅ 完了</span></div>
+          <div class="route-desc">イベント一覧。Google Sheets CSV連携。5分キャッシュ</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/members</div>
+          <div><span class="badge-warn">⚠️ 部分完了</span></div>
+          <div class="route-desc">メンバー一覧。プロフィールカードモーダル・検索・共通スポット未実装</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/mypage</div>
+          <div><span class="badge-warn">⚠️ 部分完了</span></div>
+          <div class="route-desc">マイページ。「お気に入り」「マイスポット」2タブ実装済み。うちの子・SNS・プロフィール編集は未実装</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/terms</div>
+          <div><span class="badge-ok">✅ 完了</span></div>
+          <div class="route-desc">利用規約（静的ページ）</div>
+        </div>
+        <div class="route-item">
+          <div class="route-path">/privacy</div>
+          <div><span class="badge-ok">✅ 完了</span></div>
+          <div class="route-desc">プライバシーポリシー（静的ページ）</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Auth -->
+    <section id="feat-auth">
+      <div class="section-header">
+        <span class="icon">🔐</span>
+        <h2>認証</h2>
+        <span class="count badge-ok">✅ 完了</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>方式</td><td>Google OAuth（Supabase Auth SDK）</td></tr>
+            <tr><td>ログイン画面</td><td><code>/login</code>。「← トップへ戻る」リンクあり</td></tr>
+            <tr><td>セッション管理</td><td>Supabase クライアント/サーバー両対応</td></tr>
+            <tr><td>未ログイン</td><td>マップ閲覧は可能。保存・追加には認証が必要</td></tr>
+            <tr><td>招待制（予定）</td><td><code>allowed_emails</code> テーブル照合（<strong>未実装</strong>）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note-box">✅ <strong>招待制アクセス制御実装済み（2026-05-28）。</strong> allowed_emailsテーブルで照合。/admin/invites でメール管理可能。ken が admin ロール。</div>
+    </section>
+
+    <!-- Map -->
+    <section id="feat-map">
+      <div class="section-header">
+        <span class="icon">🗺️</span>
+        <h2>マップ（/map）</h2>
+        <span class="count badge-warn">⚠️ 部分完了</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>機能</th><th>状態</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>地図表示</td><td><span class="badge-ok">✅</span></td><td>Leaflet + OpenStreetMap（初期表示: 京都市）</td></tr>
+            <tr><td>カテゴリ別ピン表示</td><td><span class="badge-ok">✅</span></td><td>カテゴリカラーの円バッジ＋絵文字＋三角ポインター</td></tr>
+            <tr><td>ピン選択ハイライト</td><td><span class="badge-ok">✅</span></td><td>選択中ピンはリング強調・サイズアップ</td></tr>
+            <tr><td>カテゴリフィルター</td><td><span class="badge-ok">✅</span></td><td>横スクロールバー・件数表示</td></tr>
+            <tr><td>スポット詳細（ボトムシート）</td><td><span class="badge-ok">✅</span></td><td>名前・カテゴリ・メモ・写真・投稿者表示</td></tr>
+            <tr><td>住所検索</td><td><span class="badge-ok">✅</span></td><td>国土地理院API。検索結果へのflyToアニメーション</td></tr>
+            <tr><td>AI検索バー</td><td><span class="badge-ok">✅</span></td><td>スポット絞り込みAI検索（/api/ai-search）</td></tr>
+            <tr><td>スポット保存ボタン</td><td><span class="badge-ok">✅</span></td><td>♡ボタン。toggleSave()でsavesテーブルをupsert/delete。保存済みはfill表示。エラー時は赤トースト表示</td></tr>
+            <tr><td>保存数表示</td><td><span class="badge-ok">✅</span></td><td>スポット詳細に「○人が保存」表示。スポット選択時にsavesテーブルからcount取得</td></tr>
+            <tr><td>ベルアイコン（お知らせ）</td><td><span class="badge-err">❌</span></td><td>ヘッダー右端に配置予定</td></tr>
+            <tr><td>FABボタン（追加）</td><td><span class="badge-ok">✅</span></td><td>BottomNav中央に浮く赤丸+ボタン。/map?add=1 → pickingモード起動</td></tr>
+            <tr><td>友人の保存表示</td><td><span class="badge-err">❌</span></td><td>savesテーブル依存</td></tr>
+            <tr><td>セグメントタブ（ボトムシート）</td><td><span class="badge-err">❌</span></td><td>「近くのスポット」「友人の保存」切替</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Spots -->
+    <section id="feat-spots">
+      <div class="section-header">
+        <span class="icon">📍</span>
+        <h2>スポット</h2>
+        <span class="count badge-warn">⚠️ 部分完了</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>機能</th><th>状態</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>スポット追加（住所検索）</td><td><span class="badge-ok">✅</span></td><td>国土地理院API → カテゴリ選択 → メモ・写真入力</td></tr>
+            <tr><td>スポット追加（地図タップ）</td><td><span class="badge-ok">✅</span></td><td>マップタップで位置指定</td></tr>
+            <tr><td>カテゴリ</td><td><span class="badge-ok">✅</span></td><td>猫カフェ / 地域猫 / 保護施設 / 猫好きのお店 / 動物病院 / その他（6種）</td></tr>
+            <tr><td>写真アップロード</td><td><span class="badge-ok">✅</span></td><td>スポット追加時 + 既存スポットへの後付け追加</td></tr>
+            <tr><td>スポット削除</td><td><span class="badge-ok">✅</span></td><td>自分の投稿のみ（author_id照合）</td></tr>
+            <tr><td>スポット保存（ブックマーク）</td><td><span class="badge-ok">✅</span></td><td>savesテーブル作成済み。ボトムシートに♡ボタン実装済み</td></tr>
+            <tr><td>スポット承認フロー</td><td><span class="badge-err">❌</span></td><td>現在は追加即公開。status='pending'管理未実装</td></tr>
+            <tr><td>このスポットの猫</td><td><span class="badge-err">❌</span></td><td>spot_catsテーブル未作成</td></tr>
+            <tr><td>このスポットを保存した人</td><td><span class="badge-err">❌</span></td><td>savesテーブル依存</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;">カテゴリカラー</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>カテゴリ</th><th>コード</th><th>スタイル</th></tr></thead>
+          <tbody>
+            <tr><td>🐱 猫カフェ (cat_cafe)</td><td><code>#E8845A</code></td><td>solid fill（warm orange）</td></tr>
+            <tr><td>🐈 地域猫 (local_cat)</td><td><code>#9E9A93</code></td><td>solid fill（muted gray）</td></tr>
+            <tr><td>🏠 保護施設 (shelter)</td><td><code>#4A7C59</code></td><td>solid fill（forest green）</td></tr>
+            <tr><td>🏪 猫好きのお店 (cat_shop)</td><td><code>#C05A1F</code></td><td>solid fill（burnt orange）</td></tr>
+            <tr><td>🏥 動物病院 (vet)</td><td><code>#5A8AB0</code></td><td>solid fill（steel blue）</td></tr>
+            <tr><td>📍 その他 (other)</td><td><code>#9E9A93</code></td><td>solid fill（muted gray）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <section id="feat-events">
+      <div class="section-header">
+        <span class="icon">🎉</span>
+        <h2>イベント（/events）</h2>
+        <span class="count badge-ok">✅ 主要機能完了</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>機能</th><th>状態</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>イベント一覧表示</td><td><span class="badge-ok">✅</span></td><td>Supabaseイベントテーブルから取得（Google Sheets廃止）。画像バナー対応</td></tr>
+            <tr><td>データソース</td><td><span class="badge-ok">✅</span></td><td>Supabase eventsテーブル。/admin/eventsで管理</td></tr>
+            <tr><td>イベント詳細ページ</td><td><span class="badge-ok">✅</span></td><td>/events/[id]。参加ボタン・参加キャンセル実装</td></tr>
+            <tr><td>参加登録機能</td><td><span class="badge-ok">✅</span></td><td>event_participantsテーブル。POST/DELETE /api/events/[id]/participate</td></tr>
+            <tr><td>参加者一覧</td><td><span class="badge-ok">✅</span></td><td>詳細ページ内に表示。タップでプロフィールカードモーダル</td></tr>
+            <tr><td>イベント管理ページ</td><td><span class="badge-ok">✅</span></td><td>/admin/events。追加・編集・削除・画像アップロード</td></tr>
+            <tr><td>日英表示</td><td><span class="badge-ok">✅</span></td><td>Accept-Languageヘッダー検出で自動切替</td></tr>
+            <tr><td>マップ上のイベントピン</td><td><span class="badge-err">❌</span></td><td>イベントピン（purple）未実装</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;">Google Sheets 列構成</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>列</th><th>内容</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr><td>A: title</td><td>イベント名</td><td>必須</td></tr>
+            <tr><td>B: date</td><td>開催日 (YYYY-MM-DD)</td><td></td></tr>
+            <tr><td>C: time</td><td>開始時刻 (HH:MM)</td><td>省略可</td></tr>
+            <tr><td>D: location</td><td>開催場所</td><td>Google Maps検索に使用</td></tr>
+            <tr><td>E: description</td><td>説明文</td><td></td></tr>
+            <tr><td>F: url</td><td>参加登録URL</td><td>省略可（ある場合のみボタン表示）</td></tr>
+            <tr><td>G: published</td><td>公開フラグ</td><td>省略/空白=表示、FALSEのみ非表示</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Members -->
+    <section id="feat-members">
+      <div class="section-header">
+        <span class="icon">👥</span>
+        <h2>メンバー（/members）</h2>
+        <span class="count badge-warn">⚠️ 基本表示のみ</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>機能</th><th>状態</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>メンバー一覧表示</td><td><span class="badge-ok">✅</span></td><td>アバター・表示名・メールアドレス</td></tr>
+            <tr><td>検索バー</td><td><span class="badge-err">❌</span></td><td>名前・猫での絞り込み未実装</td></tr>
+            <tr><td>プロフィールカードモーダル</td><td><span class="badge-err">❌</span></td><td>タップでモーダル表示未実装</td></tr>
+            <tr><td>うちの猫表示</td><td><span class="badge-err">❌</span></td><td>catsテーブル作成済み・UI未実装</td></tr>
+            <tr><td>SNSリンク表示</td><td><span class="badge-err">❌</span></td><td>user_sns_linksテーブル作成済み・UI未実装</td></tr>
+            <tr><td>共通スポットバッジ</td><td><span class="badge-err">❌</span></td><td>savesテーブル作成済み・UI未実装</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MyPage -->
+    <section id="feat-mypage">
+      <div class="section-header">
+        <span class="icon">👤</span>
+        <h2>マイページ（/mypage）</h2>
+        <span class="count badge-ok">✅ 主要機能実装済み</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>機能</th><th>状態</th><th>詳細</th></tr></thead>
+          <tbody>
+            <tr><td>プロフィール表示</td><td><span class="badge-ok">✅</span></td><td>Googleアバター・表示名・メールアドレス・bio</td></tr>
+            <tr><td>統計行（お気に入り数・マイスポット数）</td><td><span class="badge-ok">✅</span></td><td>プロフィール下にカウント表示</td></tr>
+            <tr><td>SNSリンク表示</td><td><span class="badge-ok">✅</span></td><td>Instagram/X/Facebook等アイコン表示。タップで外部リンク</td></tr>
+            <tr><td>うちの子セクション</td><td><span class="badge-ok">✅</span></td><td>横スクロールタイル。写真付き。＋ボタンでモーダル追加・ホバーで削除</td></tr>
+            <tr><td>「お気に入り」タブ</td><td><span class="badge-ok">✅</span></td><td>保存したスポット一覧。解除ボタン付き。カードタップでマップ移動</td></tr>
+            <tr><td>「マイスポット」タブ</td><td><span class="badge-ok">✅</span></td><td>自分が投稿したスポット一覧。削除ボタン付き</td></tr>
+            <tr><td>プロフィール編集（/mypage/edit）</td><td><span class="badge-ok">✅</span></td><td>表示名・bio編集。SNSリンク追加/削除（最大4件）</td></tr>
+            <tr><td>ログアウト</td><td><span class="badge-ok">✅</span></td><td>Supabase signOut</td></tr>
+            <tr><td>活動バッジタブ</td><td><span class="badge-err">❌</span></td><td>contribution_eventsテーブル作成済み・UI未実装</td></tr>
+            <tr><td>うちの子詳細モーダル</td><td><span class="badge-err">❌</span></td><td>S-04c未実装</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Static pages -->
+    <section id="feat-pages">
+      <div class="section-header">
+        <span class="icon">📄</span>
+        <h2>静的ページ</h2>
+        <span class="count badge-ok">✅ 完了</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ページ</th><th>ルート</th><th>状態</th></tr></thead>
+          <tbody>
+            <tr><td>ランディングページ</td><td><code>/</code></td><td><span class="badge-ok">✅ 完了</span></td></tr>
+            <tr><td>ビジョンページ</td><td><code>/vision</code></td><td><span class="badge-ok">✅ 日英対応済み</span></td></tr>
+            <tr><td>利用規約</td><td><code>/terms</code></td><td><span class="badge-ok">✅ 完了</span></td></tr>
+            <tr><td>プライバシーポリシー</td><td><code>/privacy</code></td><td><span class="badge-ok">✅ 完了</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- i18n -->
+    <section id="feat-i18n">
+      <div class="section-header">
+        <span class="icon">🌐</span>
+        <h2>多言語対応</h2>
+        <span class="count badge-warn">⚠️ 部分対応</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>対応箇所</th><th>状態</th><th>方法</th></tr></thead>
+          <tbody>
+            <tr><td>ビジョンページ（/vision）</td><td><span class="badge-ok">✅</span></td><td>Accept-Language自動検出。インラインCONTENTオブジェクト</td></tr>
+            <tr><td>イベントページ（/events）</td><td><span class="badge-ok">✅</span></td><td>Accept-Language自動検出。lib/i18n.ts経由</td></tr>
+            <tr><td>マップ・その他画面</td><td><span class="badge-warn">⚠️</span></td><td>lib/i18n.ts + LangContextで部分対応</td></tr>
+            <tr><td>スポットデータ（name_en）</td><td><span class="badge-err">❌</span></td><td>新スキーマ移行後に対応</td></tr>
+            <tr><td>言語選択オンボーディング（S-00b）</td><td><span class="badge-err">❌</span></td><td>未実装</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;">サーバーコンポーネントでの言語検出パターン</h3>
+      <pre>import { headers } from "next/headers";
+import { detectLang, t } from "@/lib/i18n";
+
+const headersList = await headers();
+const lang = detectLang(headersList.get("accept-language") ?? "");
+const tr = t[lang];</pre>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;">TypeScript 注意点</h3>
+      <pre>// ✅ 正しい（tはオブジェクトなのでReturnType不可）
+tr: (typeof t)[keyof typeof t]
+
+// ❌ 誤り（tはfunctionではない）
+tr: ReturnType&lt;typeof t[keyof typeof t]&gt;</pre>
+    </section>
+
+    <!-- DB Schema -->
+    <section id="db">
+      <div class="section-header">
+        <span class="icon">🗄️</span>
+        <h2>DBスキーマ（現在）</h2>
+        <span class="count badge-ok">✅ 全テーブル作成済み</span>
+      </div>
+      <div class="note-box">✅ <strong>nekomichi-dev（テスト環境）に全テーブル・RLS・Storageポリシー適用済み（2026-05-28）。</strong> 本番環境への移行は全機能確認後に実施。マイグレーションSQL: <code>supabase/migrations/001_remaining_tables.sql</code></div>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;">現在のテーブル（nekomichi-dev）</h3>
+      <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 12px;">spots / users / saves / cats / user_sns_links / allowed_emails / events / event_participants / announcements / announcement_reads / announcement_reactions / announcement_polls / announcement_poll_votes / cat_photos / spot_photos / spot_cats / spot_cat_photos / system_settings / contribution_events（19テーブル）＋ handle_new_user() トリガー</p>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;"><code>spots</code> テーブル</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>カラム</th><th>型</th><th>説明</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>uuid</td><td>PK</td></tr>
+            <tr><td><code>name</code></td><td>text</td><td>スポット名</td></tr>
+            <tr><td><code>category</code></td><td>text</td><td>cat_cafe / local_cat / shelter / cat_shop / vet / other</td></tr>
+            <tr><td><code>lat</code></td><td>float</td><td>緯度</td></tr>
+            <tr><td><code>lng</code></td><td>float</td><td>経度</td></tr>
+            <tr><td><code>memo</code></td><td>text</td><td>メモ（任意）</td></tr>
+            <tr><td><code>author_id</code></td><td>uuid</td><td>投稿者 user ID（RLS・オーナー判定）</td></tr>
+            <tr><td><code>author_email</code></td><td>text</td><td>投稿者メール（表示用）</td></tr>
+            <tr><td><code>photo_url</code></td><td>text</td><td>写真URL（Supabase Storage）</td></tr>
+            <tr><td><code>created_at</code></td><td>timestamp</td><td>作成日時</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin: 20px 0 10px; font-size: 14px; font-weight: 700;">RLS ポリシー（現在）</h3>
+      <pre>-- SELECT: 全員可（anon / authenticated）
+-- INSERT: 認証済みユーザーのみ、author_id = auth.uid() 条件付き
+-- UPDATE: author_id = auth.uid() のみ
+-- DELETE: author_id = auth.uid() のみ</pre>
+    </section>
+
+    <!-- Storage -->
+    <section id="storage">
+      <div class="section-header">
+        <span class="icon">📁</span>
+        <h2>ストレージ</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>バケット</th><th>状態</th><th>パス構造</th><th>アクセス</th></tr></thead>
+          <tbody>
+            <tr><td><code>spot-photos</code></td><td><span class="badge-ok">✅ 作成済み</span></td><td><code>{user_id}/{timestamp}.{ext}</code></td><td>Public（URL直アクセス可）</td></tr>
+            <tr><td><code>cat-photos</code></td><td><span class="badge-err">❌ 未作成</span></td><td><code>{user_id}/{cat_id}/{uuid}.jpg</code></td><td>—</td></tr>
+            <tr><td><code>spot-cat-photos</code></td><td><span class="badge-err">❌ 未作成</span></td><td><code>{spot_cat_id}/{uuid}.jpg</code></td><td>—</td></tr>
+            <tr><td><code>user-backgrounds</code></td><td><span class="badge-err">❌ 未作成</span></td><td><code>{user_id}/background.jpg</code></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Env vars -->
+    <section id="env">
+      <div class="section-header">
+        <span class="icon">🔑</span>
+        <h2>環境変数</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>変数名</th><th>状態</th><th>用途</th><th>設定場所</th></tr></thead>
+          <tbody>
+            <tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td><span class="badge-ok">✅ 設定済み</span></td><td>Supabase URL</td><td>Vercel + .env.local</td></tr>
+            <tr><td><code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code></td><td><span class="badge-ok">✅ 設定済み</span></td><td>Supabase Publishableキー（新形式: sb_publishable_...）</td><td>Vercel + .env.local</td></tr>
+            <tr><td><code>EVENTS_SHEET_URL</code></td><td><span class="badge-ok">✅ 設定済み</span></td><td>Google Sheets CSV URL</td><td>Vercel + .env.local</td></tr>
+            <tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td><span class="badge-err">❌ 未設定</span></td><td>Supabase管理者キー（サーバーサイド）</td><td>Vercel（required for M3）</td></tr>
+            <tr><td><code>GOOGLE_MAPS_API_KEY</code></td><td><span class="badge-err">❌ 未設定</span></td><td>Google Maps / Places API</td><td>Vercel（M2移行時）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Notes -->
+    <section id="notes">
+      <div class="section-header">
+        <span class="icon">📝</span>
+        <h2>実装メモ・技術的決定事項</h2>
+      </div>
+
+      <div class="card">
+        <h3>ジオコーディング: 国土地理院 API</h3>
+        <p style="color: var(--text-sub); font-size: 13px; margin-top: 6px;">
+          ブラウザから直接叩くと User-Agent 制限に引っかかるため、
+          <code>/api/geocode</code> 経由でプロキシ。無料・APIキー不要。
+          日本国内のみ対応。Google Places APIへの移行で精度向上予定。
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>オーナーシップ判定: author_id（UUID）</h3>
+        <p style="color: var(--text-sub); font-size: 13px; margin-top: 6px;">
+          <code>author_email</code> 比較ではなく <code>author_id</code>（UUID）を使用。
+          メールアドレスは変更・null になりうるが、IDは不変。
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>イベントページのキャッシュ（5分）</h3>
+        <p style="color: var(--text-sub); font-size: 13px; margin-top: 6px;">
+          Google Sheetsのデータ変更後、最大5分間は古いデータが表示される。
+          <code>{ next: { revalidate: 300 } }</code> で制御。
+          Vercel再デプロイでキャッシュは即時クリアされる。
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>BottomNav の現在構成（要変更）</h3>
+        <p style="color: var(--text-sub); font-size: 13px; margin-top: 6px;">
+          現在: マップ / イベント / メンバー / マイページ<br/>
+          ワイヤーフレーム準拠: マップ / メンバー / <strong>FAB（＋追加）</strong> / マイページ<br/>
+          → イベントタブを削除してFABボタンに変更が必要。
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  🐾 Nekomichi — 実装済み仕様書 v2.0 | 最終更新: 2026-05-27
+  &nbsp;|&nbsp; <a href="NEKOMICHI-NEXT.html">残り開発仕様書 →</a>
+  &nbsp;|&nbsp; <a href="NEKOMICHI-WIREFRAMES.html">ワイヤーフレーム →</a>
+</footer>
+
+</body>
+</html>
