@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nekomichi ピボット計画 — 2026-06-01</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --raised: #1a1a26;
+      --border: #2a2a3a;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --dim: #444455;
+      --brand: #86efac;
+      --brand-dim: rgba(134,239,172,0.10);
+      --brand-border: rgba(134,239,172,0.25);
+      --blue: #60a5fa;
+      --blue-dim: rgba(96,165,250,0.10);
+      --purple: #a78bfa;
+      --purple-dim: rgba(167,139,250,0.10);
+      --orange: #fb923c;
+      --orange-dim: rgba(251,146,60,0.10);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.10);
+      --yellow: #fbbf24;
+      --yellow-dim: rgba(251,191,36,0.10);
+      --pink: #f472b6;
+      --pink-dim: rgba(244,114,182,0.10);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      padding-bottom: 100px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(160deg, #0d0d18 0%, #121220 60%, #0a0a0f 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 48px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(134,239,172,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .hero h1 span { color: var(--brand); }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 580px;
+      line-height: 1.8;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--dim);
+      flex-wrap: wrap;
+    }
+
+    /* ── PIVOT BANNER ── */
+    .pivot-banner {
+      background: var(--raised);
+      border-top: 3px solid var(--brand);
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .pivot-from, .pivot-to {
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .pivot-from {
+      background: var(--red-dim);
+      border: 1px solid rgba(248,113,113,.25);
+      color: var(--red);
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+    .pivot-to {
+      background: var(--brand-dim);
+      border: 1px solid var(--brand-border);
+      color: var(--brand);
+    }
+    .pivot-arrow { font-size: 22px; color: var(--muted); }
+    .pivot-date { margin-left: auto; font-size: 12px; color: var(--dim); }
+
+    /* ── NAV ── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 48px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .toc a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      transition: all .15s;
+    }
+    .toc a:hover { color: var(--brand); border-color: var(--brand-border); }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 48px; }
+    section { margin-bottom: 64px; }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 21px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+    p { color: #bbbbc8; margin-bottom: 12px; font-size: 14px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .callout-brand  { background: var(--brand-dim);  border: 1px solid var(--brand-border); border-left: 3px solid var(--brand); }
+    .callout-blue   { background: var(--blue-dim);   border: 1px solid rgba(96,165,250,.25);  border-left: 3px solid var(--blue); }
+    .callout-yellow { background: var(--yellow-dim); border: 1px solid rgba(251,191,36,.25);  border-left: 3px solid var(--yellow); }
+    .callout-purple { background: var(--purple-dim); border: 1px solid rgba(167,139,250,.25); border-left: 3px solid var(--purple); }
+    .callout-red    { background: var(--red-dim);    border: 1px solid rgba(248,113,113,.25); border-left: 3px solid var(--red); }
+    .callout p { margin: 0; color: #c8c8d8; }
+    .callout strong { color: var(--text); }
+
+    /* ── CODE ── */
+    .code {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', 'SF Mono', monospace;
+      font-size: 13px;
+      line-height: 2;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    .cg { color: var(--brand); }
+    .cb { color: var(--blue); }
+    .cp { color: var(--purple); }
+    .co { color: var(--orange); }
+    .cr { color: var(--red); }
+    .cy { color: var(--yellow); }
+    .cm { color: var(--muted); }
+    .cd { color: var(--dim); }
+
+    /* ── DECISION TABLE ── */
+    .decision-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px; }
+    .decision-table th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      padding: 10px 14px;
+      background: var(--raised);
+      border-bottom: 1px solid var(--border);
+    }
+    .decision-table th:first-child { border-radius: 8px 0 0 0; }
+    .decision-table th:last-child  { border-radius: 0 8px 0 0; }
+    .decision-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: #bbbbc8;
+    }
+    .decision-table tr:last-child td { border-bottom: none; }
+    .decision-table tr:hover td { background: var(--raised); }
+
+    /* ── PHASE CARDS ── */
+    .phases { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+    .phase {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+    .phase:first-child { border-radius: 10px 10px 0 0; }
+    .phase:last-child  { border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; }
+    .phase-num {
+      width: 56px;
+      background: var(--raised);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0;
+      flex-shrink: 0;
+    }
+    .phase-num .pn-label { font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); }
+    .phase-num .pn-num   { font-size: 20px; font-weight: 800; }
+    .phase-body { padding: 16px 20px; flex: 1; }
+    .phase-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .phase-desc  { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .phase-items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .phase-item {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      background: var(--raised);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .phase-timing {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: var(--dim);
+      font-style: italic;
+    }
+
+    /* ── WEB3 ITEMS ── */
+    .web3-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .web3-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .web3-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .web3-card p  { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.6; }
+    .web3-card .w3-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 2px 7px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    /* ── OPEN Q ── */
+    .open-q {
+      background: var(--raised);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .oq-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .oq-q    { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .oq-ctx  { font-size: 12px; color: var(--muted); }
+
+    /* ── TIMELINE ── */
+    .tl { list-style: none; }
+    .tl-item { display: flex; gap: 16px; }
+    .tl-left {
+      display: flex; flex-direction: column;
+      align-items: center; flex-shrink: 0; width: 28px;
+    }
+    .tl-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 2px solid var(--brand); background: var(--brand-dim); flex-shrink: 0; margin-top: 5px;
+    }
+    .tl-dot.done    { background: var(--brand); }
+    .tl-dot.pending { border-color: var(--dim); background: var(--raised); }
+    .tl-dot.open    { border-color: var(--yellow); background: var(--yellow-dim); }
+    .tl-line { width: 1px; background: var(--border); flex: 1; margin-top: 4px; }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-body { padding-bottom: 24px; }
+    .tl-body h4  { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .tl-body p   { font-size: 13px; color: var(--muted); margin: 0; }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .b-hold    { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(251,191,36,.3); }
+    .b-go      { background: var(--brand-dim);  color: var(--brand);  border: 1px solid var(--brand-border); }
+    .b-later   { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,.3); }
+    .b-open    { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(96,165,250,.3); }
+
+    @media (max-width: 640px) {
+      .hero, .container, .toc, .pivot-banner { padding: 24px; }
+      .web3-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-eyebrow">Nekomichi — Strategic Pivot</div>
+  <h1>地図アプリから<br><span>AI相互援助コミュニティ</span>へ</h1>
+  <p class="hero-sub">
+    千葉工業大学 web3/AI概論（HENKAKU）の授業課題として開発スタート。
+    友人へのヒアリング・web3市場の変化・Googleマップのコスト問題を受けて
+    コアビジョンをピボット。地図は機能の一つとして残し、
+    「猫オーナーのためのAIエージェント相互援助プラットフォーム」として再定義・事業化へ。
+  </p>
+  <div class="hero-meta">
+    <span>📅 2026-06-01</span>
+    <span>📍 ビジネスプロデューサーとの議論</span>
+    <span>🔖 戦略決定・方針転換</span>
+  </div>
+</div>
+
+<!-- ══ PIVOT BANNER ══ -->
+<div class="pivot-banner">
+  <div class="pivot-from">🗺 猫スポットを探す地図アプリ</div>
+  <div class="pivot-arrow">→</div>
+  <div class="pivot-to">🐱✕🤖 AIエージェント × 猫オーナー相互援助コミュニティ</div>
+  <div class="pivot-date">決定：2026-06-01</div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="toc">
+  <a href="#s1">ピボットの背景</a>
+  <a href="#s2">新ビジョン</a>
+  <a href="#s3">Google Maps判断</a>
+  <a href="#s4">京都拠点構想</a>
+  <a href="#s5">web3戦略</a>
+  <a href="#s6">次のアクション</a>
+  <a href="#s7">創業コミュニティ</a>
+  <a href="#s8">バージョン管理</a>
+  <a href="#s9">AIナレッジシステム</a>
+  <a href="#s10">RAGデータ戦略</a>
+</nav>
+
+<div class="container">
+
+  <!-- ══ S1: ピボットの背景 ══ -->
+  <section id="s1">
+    <div class="eyebrow">Section 01</div>
+    <h2>ピボットを決断した4つの理由</h2>
+
+    <table class="decision-table">
+      <thead>
+        <tr>
+          <th width="5%">#</th>
+          <th width="25%">きっかけ</th>
+          <th>内容</th>
+          <th width="15%">判断</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--muted); font-weight:700;">①</td>
+          <td style="font-weight:600;">APIコスト問題</td>
+          <td>Google Maps移行後は利用量に応じた費用が発生。初期ユーザーが少ない段階で固定費が増える構造はリスク。</td>
+          <td><span class="badge b-hold">保留</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted); font-weight:700;">②</td>
+          <td style="font-weight:600;">Ask Maps 日本未定</td>
+          <td>GoogleのAI地図機能「Ask Maps」は米国先行。日本でのサービス開始時期は未定。これを前提にした機能投資はリスク。</td>
+          <td><span class="badge b-hold">様子見</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted); font-weight:700;">③</td>
+          <td style="font-weight:600; color: var(--brand);">友人ヒアリング ★</td>
+          <td>
+            複数の友人に話したところ、「地図機能はいい」と言いつつ
+            <strong style="color:var(--text);">「AIエージェントを活用した相互援助コミュニティ」の方が関心が高かった。</strong>
+            これは最も価値ある市場調査。
+          </td>
+          <td><span class="badge b-go">決定打</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--muted); font-weight:700;">④</td>
+          <td style="font-weight:600;">競合優位性</td>
+          <td>
+            地図アプリはGoogle/Apple Mapsと競争になる（コモディティ）。
+            「猫オーナーのためのAI相互援助」は世界にほぼ前例がないブルーオーシャン。
+          </td>
+          <td><span class="badge b-go">優位あり</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-brand">
+      <p>
+        <strong>友人の反応こそが最重要データ。</strong>
+        リリース前に複数人に話して「AIコミュニティの方が面白い」という反応が出たことは、
+        地図機能への投資を続けるより方向転換する根拠として十分。
+        MVP前のピボットは遅くない。むしろ最適なタイミング。
+      </p>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S2: 新ビジョン ══ -->
+  <section id="s2">
+    <div class="eyebrow">Section 02</div>
+    <h2>新しいビジョン — Nekomichiの再定義</h2>
+
+    <div class="code">
+<span class="cd"># 旧ビジョン</span>
+<span class="cr">猫好きのための招待制コミュニティ「マップ」</span>
+  <span class="cd">→ 猫スポットを地図上で見つけ・共有する</span>
+  <span class="cd">→ 地図が主役</span>
+
+<span class="cd"># 新ビジョン</span>
+<span class="cg">AIエージェントを活用した猫オーナー向け「相互援助コミュニティプラットフォーム」</span>
+  <span class="cd">→ 人（猫オーナー）が主役</span>
+  <span class="cd">→ AIが「猫の問題」を一緒に解決してくれる</span>
+  <span class="cd">→ コミュニティが互いにサポートし合う</span>
+  <span class="cd">→ 地図はその中の「1機能」として残る</span>
+    </div>
+
+    <h3 style="margin-bottom: 12px;">Nekomichiが解決する問題</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px;">
+        <div style="font-size:22px; margin-bottom:6px;">🏥</div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px;">急な医療費</div>
+        <div style="font-size:12px; color:var(--muted);">猫の緊急入院。コミュニティで支え合う。</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px;">
+        <div style="font-size:22px; margin-bottom:6px;">🏠</div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px;">一時預かり</div>
+        <div style="font-size:12px; color:var(--muted);">旅行・入院時。信頼できる人が近くにいる。</div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px;">
+        <div style="font-size:22px; margin-bottom:6px;">💬</div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px;">情報・相談</div>
+        <div style="font-size:12px; color:var(--muted);">猫の病気・ケア。AIが答え、経験者がサポート。</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 12px;">Nekomichiの新しい役割構造</h3>
+    <div class="code">
+<span class="cd"># Nekomichiの3つの役割</span>
+
+<span class="cg">① デモツール</span>
+  初期ユーザー・投資家・パートナーへの「これがビジョン」を示すプロダクト
+
+<span class="cb">② PRツール</span>
+  「猫好き × AI × 京都」という独自ストーリーを体現するコンテンツ
+
+<span class="cp">③ コミュニティインフラ</span>
+  創業メンバー10-20名が実際に使い、育てていく生きたプラットフォーム
+    </div>
+
+    <div class="callout callout-blue">
+      <p>
+        <strong>重要な気づき：</strong>
+        従来の「プロダクトを作って→ユーザーを集める」ではなく、
+        「コミュニティ（人）を先に作って→プロダクトと一緒に育てる」モデル。
+        web3・DAO的な立ち上げ方と本質的に一致している。
+      </p>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S3: Google Maps判断 ══ -->
+  <section id="s3">
+    <div class="eyebrow">Section 03</div>
+    <h2>Google Maps移行 — 判断と理由</h2>
+
+    <div class="callout callout-yellow">
+      <p>
+        <strong>🔶 結論：今すぐ移行しない。</strong>
+        ピボット後の優先度に合わせて再判断する。
+        地図機能は「主役」から「1機能」に降格したため、移行への投資コストが正当化しにくくなった。
+      </p>
+    </div>
+
+    <table class="decision-table">
+      <thead>
+        <tr><th>検討事項</th><th>現状</th><th>判断</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600;">APIコスト</td>
+          <td style="font-size:13px;">無料枠あり。月$200超で課金開始。初期ユーザーが少ないうちは影響小。</td>
+          <td><span class="badge b-hold">保留</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">Ask Maps（AI地図）</td>
+          <td style="font-size:13px;">日本でのリリース時期未定。これを前提にした開発は時期尚早。</td>
+          <td><span class="badge b-hold">様子見</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">現在のLeaflet/OSM</td>
+          <td style="font-size:13px;">無料。機能的には十分。コミュニティが小規模なうちは問題なし。</td>
+          <td><span class="badge b-go">継続利用</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">移行タイミング</td>
+          <td style="font-size:13px;">コミュニティが成長してユーザー数が増えた段階、またはAI地図機能が日本解禁時。</td>
+          <td><span class="badge b-later">将来</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr />
+
+  <!-- ══ S4: 京都拠点構想 ══ -->
+  <section id="s4">
+    <div class="eyebrow">Section 04</div>
+    <h2>京都開発拠点構想</h2>
+
+    <p>
+      ピボットの核心にある「場所としての構想」。プロダクトではなくコミュニティが先に来る設計。
+    </p>
+
+    <div class="callout callout-purple">
+      <p>
+        <strong>「京都 × 猫 × AI × web3 × アート × 海外感覚」</strong><br>
+        この組み合わせは他の誰も作れない。場所が先にあることで、
+        Nekomichiのストーリーに物理的なリアリティが生まれる。
+      </p>
+    </div>
+
+    <div class="code">
+<span class="cd"># 拠点の構造イメージ</span>
+
+<span class="cg">物理的な場（シェアハウス / シェアオフィス）</span>
+    京都市内、10〜20名規模
+    猫と住める / 猫フレンドリーな環境
+
+<span class="cb">メンバー像</span>
+    猫好き × 何らかのスキル持ち
+    エンジニア、デザイナー、研究者、アーティスト
+    「猫の問題」に当事者として向き合える人
+
+<span class="cp">この場が果たす役割</span>
+    ① Nekomichiの最初のユーザーコミュニティ
+    ② 「AIエージェント × 猫生活」の実験場
+    ③ 投資家・メディアへの取材拠点
+    ④ 海外からの猫好きとの交流ハブ（フランス等）
+    </div>
+
+    <h3 style="margin-top: 20px; margin-bottom: 12px;">コミュニティファースト戦略</h3>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px;">
+        <div style="font-size:12px; color:var(--red); font-weight:700; margin-bottom:8px;">❌ 従来型（避けるべき）</div>
+        <div style="font-size:13px; color:var(--muted); line-height:2;">
+          プロダクトを完成させる<br>
+          → ユーザーを集めようとする<br>
+          → なかなか使ってもらえない<br>
+          → 改善の声が集まらない
+        </div>
+      </div>
+      <div style="background:var(--brand-dim); border:1px solid var(--brand-border); border-radius:10px; padding:18px;">
+        <div style="font-size:12px; color:var(--brand); font-weight:700; margin-bottom:8px;">✅ Nekomichi型（目指す）</div>
+        <div style="font-size:13px; color:#c8c8d8; line-height:2;">
+          人（創業メンバー）を先に集める<br>
+          → その人たちと一緒にプロダクトを育てる<br>
+          → 生きた改善サイクルが回る<br>
+          → ストーリーが勝手に広まる
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S5: web3戦略 ══ -->
+  <section id="s5">
+    <div class="eyebrow">Section 05</div>
+    <h2>web3戦略 — 段階的な統合</h2>
+
+    <p>
+      web3の仕組みを「早期から」活用したい意向。
+      ただし「web3っぽさ」を前面に出すのではなく、インフラとして静かに入れる。
+    </p>
+
+    <h3 style="margin-bottom: 14px;">市場環境（2026年時点）</h3>
+    <div class="web3-grid" style="margin-bottom: 24px;">
+      <div class="web3-card">
+        <span class="w3-tag" style="background:var(--brand-dim); color:var(--brand); border:1px solid var(--brand-border);">今ここ</span>
+        <h4>💴 JPYC × LINE統合</h4>
+        <p>LINEヤフーのweb3ウォレット「Unifi」がJPYC採用。LINEアプリ上で数億ユーザーが日本円ステーブルコインを利用可能に。「暗号資産アレルギー」を回避した最短ルート。</p>
+      </div>
+      <div class="web3-card">
+        <span class="w3-tag" style="background:var(--blue-dim); color:var(--blue); border:1px solid rgba(96,165,250,.3);">動向</span>
+        <h4>📊 web3社会実装フェーズへ</h4>
+        <p>Forbes「web3は社会実装のフェーズへ」。ステーブルコイン・DeSci・RWAが実体経済を動かす段階へ。日本でも2025年10月に電子決済手段として正式認可。</p>
+      </div>
+      <div class="web3-card">
+        <span class="w3-tag" style="background:var(--purple-dim); color:var(--purple); border:1px solid rgba(167,139,250,.3);">機会</span>
+        <h4>🔬 DeSci × 猫健康データ</h4>
+        <p>分散型科学（DeSci）の台頭。猫の健康データをコミュニティ所有・DAO管理→研究機関への提供でコミュニティ収益化。将来の可能性。</p>
+      </div>
+      <div class="web3-card">
+        <span class="w3-tag" style="background:var(--yellow-dim); color:var(--yellow); border:1px solid rgba(251,191,36,.3);">注意</span>
+        <h4>⚠️ ユーザーリテラシー</h4>
+        <p>猫オーナー層（40〜60代女性中心）にweb3ウォレット操作はまだ障壁。「web3」という言葉を前に出すと離脱リスク。体験として自然に組み込む設計が必要。</p>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 14px;">段階的web3統合ロードマップ</h3>
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num" style="color:var(--brand);">
+          <span class="pn-label">Phase</span>
+          <span class="pn-num">1</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--brand);">AIコミュニティ機能 — 人を集める</div>
+          <div class="phase-desc">web3は一切触れない。「AI相互援助コミュニティ」の価値を届けることに集中。</div>
+          <div class="phase-items">
+            <span class="phase-item">AIエージェント実験</span>
+            <span class="phase-item">創業メンバー募集</span>
+            <span class="phase-item">京都拠点立ち上げ</span>
+            <span class="phase-item">ユーザーインタビュー継続</span>
+          </div>
+        </div>
+        <div class="phase-timing">今ここ</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num" style="color:var(--blue);">
+          <span class="pn-label">Phase</span>
+          <span class="pn-num">2</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--blue);">JPYCで小額相互援助 — 気づいたらweb3体験</div>
+          <div class="phase-desc">JPYC × LINE Unifiを使って猫の一時預かりへのお礼・緊急援助をスムーズに。「web3」という言葉は使わない。</div>
+          <div class="phase-items">
+            <span class="phase-item">JPYC決済統合</span>
+            <span class="phase-item">一時預かりチップ機能</span>
+            <span class="phase-item">信頼スコア形成</span>
+            <span class="phase-item">緊急援助ファンド（小規模）</span>
+          </div>
+        </div>
+        <div class="phase-timing">コミュニティ形成後</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num" style="color:var(--purple);">
+          <span class="pn-label">Phase</span>
+          <span class="pn-num">3</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--purple);">DAOガバナンス・NFTメンバーシップ</div>
+          <div class="phase-desc">コミュニティが成長し、自律的な意思決定が必要になった段階で本格的なweb3設計を導入。</div>
+          <div class="phase-items">
+            <span class="phase-item">NFT招待証（SBT）</span>
+            <span class="phase-item">DAO型援助ガバナンス</span>
+            <span class="phase-item">猫健康データDAO</span>
+            <span class="phase-item">RWA的な共同購入</span>
+          </div>
+        </div>
+        <div class="phase-timing">規模拡大後</div>
+      </div>
+    </div>
+
+    <div class="callout callout-brand">
+      <p>
+        <strong>ひとつの原則：</strong>
+        「web3を使っている」ことを意識させない設計。
+        ユーザーにとっては「猫の問題が解決できるコミュニティ」であり、
+        web3はその裏側のインフラ。これがマス向けweb3プロダクトの正しい入り方。
+      </p>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S6: 次のアクション ══ -->
+  <section id="s6">
+    <div class="eyebrow">Section 06</div>
+    <h2>次のアクション</h2>
+
+    <ul class="tl">
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>✅ ピボット方針決定（本日）</h4>
+          <p>地図アプリ → AI相互援助コミュニティへの方向転換を決定。このドキュメントで記録完了。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>✅ Google Maps移行 — 保留決定</h4>
+          <p>ピボット後の優先度に合わせて再判断。現在のLeaflet/OSMを継続利用。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot open"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>❓ 創業メンバー候補の確認 <span class="badge b-open">要回答</span></h4>
+          <p>10〜20名の京都拠点メンバー候補は現時点で存在するか？集め方から考える段階か？次の開発方針に直結する。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>✅ AIエージェント機能実装（2026-06-01）</h4>
+          <p>/demo（Groq API AIチャット）・/knowledge（猫博士Q&Aナレッジ）を実装済み。緊急度・信頼レベル・投票機能付き。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>✅ ユーザー動線をビジョン起点に再設計（2026-06-01）</h4>
+          <p>「デモを試す」ファーストから「ビジョンを読む」ファーストへ転換。ランディング→ビジョン→デモ→参加の正しい流れを構築。未ログイン/ログイン済みでBottomNavを分離。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot done"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>✅ デプロイ基盤安定化（2026-06-01）</h4>
+          <p>Vercel-GitHub App不安定問題をDeploy Hook + GitHub Actionsで解決。pushのたびに確実にデプロイされる基盤を構築。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot pending"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>⏳ HENKAKUコアメンバーへの事業化宣言（2026-06-03 水曜日）</h4>
+          <p>Discord投稿文準備済み。ビジョンページの整理完了を受けて宣言予定。</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <div class="tl-left"><div class="tl-dot pending"></div><div class="tl-line"></div></div>
+        <div class="tl-body">
+          <h4>MacBook Air 実験環境セットアップ</h4>
+          <p>Hermes Agent・LLM Wikiの実験環境。CLAUDE-SETUP-GUIDEの設計に従って段階的に構築。</p>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Open Questions -->
+    <h3 style="margin-top: 32px; margin-bottom: 16px;">未決事項</h3>
+
+    <div class="open-q">
+      <div class="oq-icon">🏠</div>
+      <div>
+        <div class="oq-q">京都拠点のメンバー候補は？</div>
+        <div class="oq-ctx">「集め方から考える」か「すでに候補がいる」かで次の開発優先度が変わる。</div>
+      </div>
+    </div>
+    <div class="open-q">
+      <div class="oq-icon">🤖</div>
+      <div>
+        <div class="oq-q">最初のAIエージェント機能は何にするか？</div>
+        <div class="oq-ctx">「猫の病気相談AI」「一時預かりマッチング」「猫フード推薦」等。何がコアバリューか。</div>
+      </div>
+    </div>
+    <div class="open-q">
+      <div class="oq-icon">🌐</div>
+      <div>
+        <div class="oq-q">web3統合の最初の一手は？</div>
+        <div class="oq-ctx">Phase 2はコミュニティ形成後。Phase 1でweb3要素を「隠し味」で入れる方法はあるか。</div>
+      </div>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S7: 創業コミュニティ ══ -->
+  <section id="s7">
+    <div class="eyebrow">Section 07</div>
+    <h2>創業コミュニティ — 人材・連携の地図</h2>
+
+    <p>4つのコミュニティが揃っており、創業メンバーの陣容として想定以上に強い。</p>
+
+    <div class="callout callout-brand">
+      <p>
+        <strong>全体評価：</strong>
+        Nekomichiが「これから3年かけて作ろうとしているもの」を、すでに持っているコミュニティが存在する（ネコリパブリック）。
+        それが友人の会社であることは、最大のアセット。使い方次第で立ち上がりが劇的に速くなる。
+      </p>
+    </div>
+
+    <!-- コミュニティカード -->
+    <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px;">
+
+      <!-- ネコリパ -->
+      <div style="background:var(--surface); border:1px solid var(--brand-border); border-radius:12px; padding:22px; position:relative;">
+        <div style="position:absolute; top:16px; right:16px;">
+          <span class="badge b-go">最優先</span>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="font-size:28px; flex-shrink:0;">🐱</div>
+          <div style="flex:1;">
+            <h3 style="margin-bottom:4px;">ネコリパブリック</h3>
+            <a href="https://www.neco-republic.jp/" style="font-size:11px; color:var(--blue); font-family:monospace; text-decoration:none;">neco-republic.jp</a>
+            <p style="margin-top:8px; font-size:13px; color:#c0c0d0; line-height:1.7;">
+              保護猫カフェ18拠点以上の全国展開企業。「自走型ビジネスで猫を救う」がミッション。
+              代表の麻花さんは友人。すでに猫好きコミュニティのインフラ・ユーザー基盤・実店舗ネットワークを持つ。
+            </p>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; color:var(--brand); font-weight:700; margin-bottom:6px;">連携で生まれる可能性</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span class="phase-item" style="border-color:var(--brand-border); color:var(--brand);">京都店を共同拠点に</span>
+                <span class="phase-item" style="border-color:var(--brand-border); color:var(--brand);">保護猫情報をマップ統合</span>
+                <span class="phase-item" style="border-color:var(--brand-border); color:var(--brand);">里親マッチングAI</span>
+                <span class="phase-item" style="border-color:var(--brand-border); color:var(--brand);">既存ユーザーにNekomichi提供</span>
+              </div>
+            </div>
+            <div class="callout callout-yellow" style="margin-top:14px; margin-bottom:0; padding:12px 16px;">
+              <p style="font-size:12px;">
+                <strong>⚠ 注意：</strong>友人だからこそ曖昧になりやすい。
+                対話の前に「主導権・収益分配・ブランド・データ所有」の4点を自分の中で整理してから話す。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- おさかなだお -->
+      <div style="background:var(--surface); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:22px;">
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="font-size:28px; flex-shrink:0;">🐟</div>
+          <div style="flex:1;">
+            <h3 style="margin-bottom:4px;">おさかなだお長崎</h3>
+            <a href="https://note.com/osakanadao" style="font-size:11px; color:var(--blue); font-family:monospace; text-decoration:none;">note.com/osakanadao</a>
+            <p style="margin-top:8px; font-size:13px; color:#c0c0d0; line-height:1.7;">
+              長崎の水産業振興をテーマにした地方創生DAO。21プロジェクト・65記事以上の実績あり。
+              2年間ともに活動してきた信頼関係。「地方×DAOで事業化」という構造がNekomichiと完全一致。
+              <strong style="color:var(--text);">京都モデルが成功すれば長崎展開も視野。</strong>
+            </p>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; color:var(--blue); font-weight:700; margin-bottom:6px;">役割</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span class="phase-item">DAO設計の先輩として学ぶ</span>
+                <span class="phase-item">地方創生DAO Network</span>
+                <span class="phase-item">長崎展開パートナー</span>
+                <span class="phase-item">インバウンド×地方PRの知見</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HENKAKU -->
+      <div style="background:var(--surface); border:1px solid rgba(167,139,250,.4); border-radius:12px; padding:22px; position:relative;">
+        <div style="position:absolute; top:16px; right:16px;">
+          <span class="badge" style="background:var(--purple-dim); color:var(--purple); border:1px solid rgba(167,139,250,.4);">原点</span>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="font-size:28px; flex-shrink:0;">🎓</div>
+          <div style="flex:1;">
+            <h3 style="margin-bottom:4px;">HENKAKU / 千葉工業大学 web3・AI概論</h3>
+            <a href="https://gairon.henkaku.org/" style="font-size:11px; color:var(--blue); font-family:monospace; text-decoration:none;">gairon.henkaku.org</a>
+            <div class="callout callout-purple" style="margin-top:12px; margin-bottom:12px; padding:12px 16px;">
+              <p style="font-size:13px;">
+                <strong>Nekomichiはこの授業の課題として生まれたプロジェクト。</strong>
+                HENKAKUは「外部コミュニティ」ではなく、Nekomichiの出発点・原点。
+                コアメンバーとすでに交流があり、内部の人間として動いている。
+              </p>
+            </div>
+            <p style="font-size:13px; color:#c0c0d0; line-height:1.7;">
+              伊藤穰一主宰のHENKAKUコミュニティによる千葉工業大学公式科目（3年間受講）。
+              学生・社会人・企業が混在する実践型コミュニティ。AIエージェント×DAO設計の最先端人材が集まる。
+              <strong style="color:var(--text);">「課題から本物のビジネスへ」という過程がそのままNekomichiのストーリーになる。</strong>
+            </p>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; color:var(--purple); font-weight:700; margin-bottom:6px;">できること（今すぐ）</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span class="phase-item" style="border-color:rgba(167,139,250,.4); color:var(--purple);">進捗報告・展開相談</span>
+                <span class="phase-item" style="border-color:rgba(167,139,250,.4); color:var(--purple);">コアメンバーへの役割打診</span>
+                <span class="phase-item" style="border-color:rgba(167,139,250,.4); color:var(--purple);">HENKAKUの発信力をPRに活用</span>
+                <span class="phase-item" style="border-color:rgba(167,139,250,.4); color:var(--purple);">DAO/トークン設計の相談</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- クリエイター仲間 -->
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px;">
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="font-size:28px; flex-shrink:0;">🎨</div>
+          <div style="flex:1;">
+            <h3 style="margin-bottom:4px;">クリエイター仲間 2名</h3>
+            <p style="margin-top:8px; font-size:13px; color:#c0c0d0; line-height:1.7;">
+              すでに候補として存在する、最もコアに近い人材。
+              京都×アート×文化という背景がNekomichiのブランドと直結する。
+              最初の「コアチーム」として最優先でオンボードする。
+            </p>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px; color:var(--muted); font-weight:700; margin-bottom:6px;">役割</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <span class="phase-item">コアチーム（創業メンバー核）</span>
+                <span class="phase-item">クリエイティブ・アート軸</span>
+                <span class="phase-item">ビジョン共有パートナー</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対話の優先順位 -->
+    <h3 style="margin-bottom: 14px;">次に話すべき相手の順序</h3>
+    <div class="code">
+<span class="cd"># 対話優先度</span>
+
+<span class="cp">1位 HENKAKUコアメンバー</span>
+   タイミング：今すぐ。原点コミュニティへの進捗共有＋事業化宣言。
+   アジェンダ：「課題から事業へ」の展開報告。役割に関心あるメンバーへの打診。
+
+<span class="cb">2位 クリエイター仲間 2名</span>
+   タイミング：今すぐ。コアチームとして仮コミットを得る。
+
+<span class="cg">3位 ネコリパブリック（麻花さん）</span>
+   タイミング：ビジョン・役割分担の構想が固まってから。
+   アジェンダ：「共同パイロット」の可能性。win-winの構造を先に設計する。
+
+<span class="cm">4位 おさかなだお長崎</span>
+   タイミング：京都モデルが動き出してから。長崎展開の相談として自然につながる。
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S8: バージョン管理 ══ -->
+  <section id="s8">
+    <div class="eyebrow">Section 08</div>
+    <h2>プロトタイプのバージョン管理</h2>
+
+    <p>ピボット決断と同時に、v1（地図アプリ）を永久保存した。v2（AI相互援助コミュニティ）は同じリポジトリで継続開発する。</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div style="background:var(--surface); border:1px solid rgba(248,113,113,.25); border-radius:12px; padding:20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--red); margin-bottom:10px;">prototype-v1（保存済）</div>
+        <h3 style="font-size:15px; margin-bottom:6px;">猫スポットマップ</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6;">
+          地図アプリとして開発したHENKAKU課題の原型。レベルシステム・メンバー機能・お知らせ機能まで実装済み。
+        </p>
+        <div class="code" style="margin:0; font-size:12px; line-height:1.8;">
+<span class="cm">tag:</span>    <span class="cr">prototype-v1</span>
+<span class="cm">branch:</span> <span class="cr">prototype-v1</span>
+<span class="cm">commit:</span> <span class="cd">28e2e0b</span>
+        </div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--brand-border); border-radius:12px; padding:20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--brand); margin-bottom:10px;">prototype-v2（開発中）</div>
+        <h3 style="font-size:15px; margin-bottom:6px;">AI相互援助コミュニティ</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6;">
+          ピボット後の新ビジョン。ランディング→ビジョン→デモ→参加の動線設計完了。AIチャット・猫博士ナレッジ・BottomNav二段階切り替え実装済み。GitHub Actions自動デプロイ基盤構築済み。
+        </p>
+        <div class="code" style="margin:0; font-size:12px; line-height:1.8;">
+<span class="cm">branch:</span> <span class="cg">main（作業中）</span>
+<span class="cm">開始日:</span> <span class="cd">2026-06-01</span>
+<span class="cm">宣言予定:</span> <span class="cd">2026-06-03（水）</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:12px;">gitコマンドリファレンス</h3>
+    <div class="code">
+<span class="cd"># v1（ピボット前）のコードを見たいとき</span>
+git checkout prototype-v1
+
+<span class="cd"># v2（現在の開発）に戻るとき</span>
+git checkout main
+
+<span class="cd"># v1とv2の差分を確認</span>
+git diff prototype-v1 main -- src/app/page.tsx
+
+<span class="cd"># タグ一覧</span>
+git tag
+    </div>
+
+    <div class="callout callout-brand">
+      <p>
+        <strong>なぜv1を残すか：</strong>
+        「地図アプリだったv1」と「AI相互援助コミュニティのv2」を並べて見せることで、
+        ピボットの意思決定プロセス自体がHENKAKUへの報告・投資家への説明として機能する。
+        削除せず、ストーリーの一部として活用する。
+      </p>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S9: AIナレッジシステム構想 ══ -->
+  <section id="s9">
+    <div class="eyebrow">Section 09</div>
+    <h2>AIナレッジシステム — コミュニティが育てるAI</h2>
+
+    <p>2026-06-01 の議論から生まれた、Nekomichiの技術的差別化の核心。単なるAIチャットではなく、コミュニティの知識がAIを賢くし続けるフライホイールを設計する。</p>
+
+    <div class="callout callout-brand">
+      <p>
+        <strong>核心的なアイデア：</strong>
+        「コミュニティが育てたQ&AをLLM Wikiで知識化し、RAGでAIを賢くする」。
+        猫オーナーの体験知識＋専門家の検証＋AIの検索能力が組み合わさった、他にないナレッジシステム。
+      </p>
+    </div>
+
+    <!-- フライホイール -->
+    <h3 style="margin-bottom:14px;">フライホイール（好循環）</h3>
+    <div class="code" style="margin-bottom:24px;">
+<span class="cg">質問が増える</span>
+    ↓
+<span class="cb">知識が蓄積される（Q&Aログ）</span>
+    ↓
+<span class="cp">LLM Wikiが構造化（Wikiページ化）</span>
+    ↓
+<span class="cg">RAGでAIが賢くなる</span>
+    ↓
+<span class="cy">価値が高まり人が集まる</span>
+    ↓
+<span class="co">検証者が増え信頼度が上がる</span>
+    ↓
+<span class="cg">さらに質問が増える ← ループ</span>
+    </div>
+
+    <!-- 技術スタック -->
+    <h3 style="margin-bottom:14px;">技術構成</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--brand); margin-bottom:8px;">Layer 1</div>
+        <h4 style="font-size:13px; margin-bottom:6px;">Q&Aログ保存</h4>
+        <p style="font-size:12px; color:var(--muted); line-height:1.6;">チャットの質問と回答をSupabaseに保存。コミュニティが👍👎で検証。獣医師などの専門家が認証。</p>
+      </div>
+      <div style="background:var(--surface); border:1px solid rgba(167,139,250,.3); border-radius:10px; padding:16px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--purple); margin-bottom:8px;">Layer 2</div>
+        <h4 style="font-size:13px; margin-bottom:6px;">LLM Wiki</h4>
+        <p style="font-size:12px; color:var(--muted); line-height:1.6;">nashsu/llm_wiki（Karpathy発想）で検証済みQ&Aを構造化Wikiページに変換。関連ページを自動リンク。</p>
+      </div>
+      <div style="background:var(--surface); border:1px solid rgba(96,165,250,.3); border-radius:10px; padding:16px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--blue); margin-bottom:8px;">Layer 3</div>
+        <h4 style="font-size:13px; margin-bottom:6px;">RAG統合</h4>
+        <p style="font-size:12px; color:var(--muted); line-height:1.6;">WikiページをベクトルDB（pgvector）に格納。AI回答時に類似ページを自動検索・文脈注入して精度向上。</p>
+      </div>
+    </div>
+
+    <!-- 信頼レイヤー -->
+    <h3 style="margin-bottom:14px;">信頼レイヤー設計</h3>
+    <table class="decision-table" style="margin-bottom:24px;">
+      <thead>
+        <tr><th>レベル</th><th>条件</th><th>表示</th><th>意味</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;">Lv.0</td>
+          <td style="font-size:13px;">AI生成のみ</td>
+          <td style="font-size:13px;">⚠ AI生成・要確認</td>
+          <td style="font-size:13px; color:var(--muted);">デフォルト状態</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color:var(--brand);">Lv.1</td>
+          <td style="font-size:13px;">コミュニティ3名以上が👍</td>
+          <td style="font-size:13px; color:var(--brand);">✅ コミュニティ確認済み</td>
+          <td style="font-size:13px; color:var(--muted);">信頼できる経験談</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color:var(--blue);">Lv.2</td>
+          <td style="font-size:13px;">獣医師・専門家が認証</td>
+          <td style="font-size:13px; color:var(--blue);">🏥 獣医師確認済み</td>
+          <td style="font-size:13px; color:var(--muted);">専門的に信頼できる</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color:var(--yellow);">Lv.3</td>
+          <td style="font-size:13px;">運営が認定</td>
+          <td style="font-size:13px; color:var(--yellow);">⭐ 公式情報</td>
+          <td style="font-size:13px; color:var(--muted);">最高信頼度</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ポイント・リワード -->
+    <h3 style="margin-bottom:14px;">ポイント・リワード設計（ゲーミフィケーション）</h3>
+    <table class="decision-table" style="margin-bottom:16px;">
+      <thead>
+        <tr><th>アクション</th><th>ポイント</th><th>理由</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>質問する</td><td style="color:var(--brand); font-weight:700;">+1</td><td style="font-size:13px; color:var(--muted);">知識の種を作る</td></tr>
+        <tr><td>回答を👍する</td><td style="color:var(--brand); font-weight:700;">+1</td><td style="font-size:13px; color:var(--muted);">最も軽い貢献</td></tr>
+        <tr><td>回答を👎する（理由付き）</td><td style="color:var(--brand); font-weight:700;">+2</td><td style="font-size:13px; color:var(--muted);">品質管理に価値大</td></tr>
+        <tr><td>獣医師として認証</td><td style="color:var(--brand); font-weight:700;">+20</td><td style="font-size:13px; color:var(--muted);">最高価値の行動</td></tr>
+        <tr><td>自分の質問が公式情報に</td><td style="color:var(--brand); font-weight:700;">+10</td><td style="font-size:13px; color:var(--muted);">優良コンテンツ作成</td></tr>
+        <tr><td>累計100件チェック</td><td style="color:var(--purple); font-weight:700;">バッジ付与</td><td style="font-size:13px; color:var(--muted);">マイルストーン報酬</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-purple">
+      <p>
+        <strong>トークンエコノミー（Phase 2以降）：</strong>
+        累積ポイント → JPYCへの変換、またはコミュニティ内特権（預かり優先マッチング等）に利用。
+        知識貢献がそのまま経済的価値になる設計。
+      </p>
+    </div>
+
+    <!-- 実装ロードマップ -->
+    <h3 style="margin-top:20px; margin-bottom:14px;">実装ロードマップ</h3>
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num" style="color:var(--brand);">
+          <span class="pn-label">Step</span><span class="pn-num">1</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--brand);">Q&Aログ保存（今すぐ）</div>
+          <div class="phase-desc">チャットの質問と回答をSupabaseに保存し始める。まず貯めることが最優先。</div>
+          <div class="phase-items">
+            <span class="phase-item">chat_logsテーブル追加</span>
+            <span class="phase-item">👍👎ボタンUI</span>
+            <span class="phase-item">信頼バッジ表示</span>
+          </div>
+        </div>
+        <div class="phase-timing">今すぐ</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num" style="color:var(--purple);">
+          <span class="pn-label">Step</span><span class="pn-num">2</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--purple);">LLM Wiki実験（MacBook Air）</div>
+          <div class="phase-desc">nashsu/llm_wiki × Ollama（M1）でローカル実験。コストゼロで設計を検証。</div>
+          <div class="phase-items">
+            <span class="phase-item">MacBook Air環境構築</span>
+            <span class="phase-item">Ollama + llm_wiki</span>
+            <span class="phase-item">Wiki構造の設計検証</span>
+          </div>
+        </div>
+        <div class="phase-timing">MacBook Air実験後</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num" style="color:var(--blue);">
+          <span class="pn-label">Step</span><span class="pn-num">3</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--blue);">RAG統合（本番）</div>
+          <div class="phase-desc">Wikiページをpgvectorでベクトル化。チャット時に自動検索・注入してAI精度向上。</div>
+          <div class="phase-items">
+            <span class="phase-item">pgvector導入</span>
+            <span class="phase-item">埋め込みモデル選定</span>
+            <span class="phase-item">AI回答精度の計測</span>
+          </div>
+        </div>
+        <div class="phase-timing">コミュニティ成長後</div>
+      </div>
+    </div>
+
+    <!-- 仕様書について -->
+    <div class="callout callout-yellow" style="margin-top:20px;">
+      <p>
+        <strong>仕様書のタイミングについて：</strong>
+        現時点での仕様書作成は不要。「方向性が固まった」段階であり、Q&Aシステムの詳細は実装直前に書く。
+        現在の文書構成：NEKOMICHI-PIVOT.html（戦略）/ NEKOMICHI-ARCHITECTURE.html（環境）/ 仕様書（実装前に作成）。
+      </p>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- ══ S10: RAGデータ戦略 ══ -->
+  <section id="s10">
+    <div class="eyebrow">Section 10</div>
+    <h2>RAGデータ戦略 — 「会話ログ」を「知識」に育てる</h2>
+
+    <p>2026-06-01 の議論。AIデータサイエンスの観点から、今のQ&A収集が何に価値があり、何に価値がないかを整理した。</p>
+
+    <div class="callout callout-yellow">
+      <p>
+        <strong>正直な評価：</strong>
+        今のデータ（短いAI生成Q&A）は機械学習の訓練データとしてはほぼ価値がない。
+        ただし<strong>RAGコーパス</strong>としては今すぐ価値がある。訓練データは獣医師が介入した瞬間に生まれる。
+      </p>
+    </div>
+
+    <h3 style="margin-bottom:12px;">データ価値の整理</h3>
+    <table class="decision-table" style="margin-bottom:24px;">
+      <thead>
+        <tr><th>用途</th><th>今の価値</th><th>理由</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;">Fine-tuning（モデル訓練）</td>
+          <td style="color:var(--red); font-weight:700;">❌ 低い</td>
+          <td style="font-size:13px; color:var(--muted);">AI生成回答でAIを訓練→循環参照。専門家検証なし。短すぎて文脈不足。</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">RAGコーパス</td>
+          <td style="color:var(--brand); font-weight:700;">✅ 今すぐ使える</td>
+          <td style="font-size:13px; color:var(--muted);">類似質問を検索して文脈に注入→AI回答精度が即改善。LLM Wikiと組み合わせると強力。</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">ユーザー意図分析</td>
+          <td style="color:var(--brand); font-weight:700;">✅ 価値あり</td>
+          <td style="font-size:13px; color:var(--muted);">どんな質問が多いか→AIが優先改善すべき領域がわかる。緊急度分布も把握できる。</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">将来の訓練データ</td>
+          <td style="color:var(--yellow); font-weight:700;">⚠ 条件次第</td>
+          <td style="font-size:13px; color:var(--muted);">獣医師による検証・緊急度スコア・構造化が揃えば1,000件以上で価値が出る。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-bottom:12px;">データ品質の向上条件（Phase 2以降）</h3>
+    <div class="code" style="margin-bottom:24px;">
+<span class="cd"># 今のデータ（価値低）</span>
+質問: 「猫が食欲不振です」
+回答: 「様々な原因が...受診を」
+
+<span class="cg"># Phase 2のデータ（価値高）</span>
+質問:   「猫が食欲不振です」
+回答:   「様々な原因が...受診を」
+緊急度: <span class="cy">medium</span>   ← 自動判定 ✅ 実装済み
+検証:   <span class="cb">獣医師確認</span> ← 専門家が追記
+構造:   症状→緊急度→推奨アクション→根拠
+    </div>
+
+    <h3 style="margin-bottom:12px;">DBスキーマ（実装済み）</h3>
+    <div class="code" style="margin-bottom:24px;">
+<span class="cd"># chat_logs テーブル（本番Supabaseに作成済み）</span>
+<span class="cg">id</span>           UUID
+<span class="cg">question</span>     TEXT        <span class="cd">← ユーザーの質問</span>
+<span class="cg">ai_response</span>  TEXT        <span class="cd">← AIの回答</span>
+<span class="cg">category</span>     TEXT        <span class="cd">← health/care/spot/general（自動判定）</span>
+<span class="cg">urgency</span>      TEXT        <span class="cd">← low/medium/high（自動判定）✅ 追加済み</span>
+<span class="cg">upvotes</span>      INTEGER     <span class="cd">← コミュニティ👍数</span>
+<span class="cg">downvotes</span>    INTEGER     <span class="cd">← コミュニティ👎数</span>
+<span class="cg">trust_level</span>  INTEGER     <span class="cd">← 0:AI生成 / 1:コミュニティ確認 / 2:獣医師確認 / 3:公式</span>
+<span class="cg">created_at</span>   TIMESTAMPTZ
+    </div>
+
+    <h3 style="margin-bottom:12px;">Phase別ロードマップ</h3>
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num" style="color:var(--brand);"><span class="pn-label">Phase</span><span class="pn-num">1</span></div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--brand);">遊んでもらいながらデータを貯める（今ここ）</div>
+          <div class="phase-desc">ゲーム・エンタメ要素で使ってもらう。データはRAGコーパスとして使用。</div>
+          <div class="phase-items">
+            <span class="phase-item">Q&A自動保存 ✅</span>
+            <span class="phase-item">緊急度自動判定 ✅</span>
+            <span class="phase-item">猫博士ゲーミフィケーション ✅</span>
+            <span class="phase-item">今日のお題（次）</span>
+            <span class="phase-item">クイズ機能（次々）</span>
+          </div>
+        </div>
+        <div class="phase-timing">今すぐ</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num" style="color:var(--blue);"><span class="pn-label">Phase</span><span class="pn-num">2</span></div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--blue);">100件以上 → 構造化 + 獣医師検証</div>
+          <div class="phase-desc">上位50件を獣医師にレビューしてもらう。緊急度スコアの精度を上げる。</div>
+          <div class="phase-items">
+            <span class="phase-item">LLM Wiki導入（MacBook Air実験）</span>
+            <span class="phase-item">獣医師検証フロー</span>
+            <span class="phase-item">RAGパイプライン本番化</span>
+          </div>
+        </div>
+        <div class="phase-timing">100件達成後</div>
+      </div>
+      <div class="phase">
+        <div class="phase-num" style="color:var(--purple);"><span class="pn-label">Phase</span><span class="pn-num">3</span></div>
+        <div class="phase-body">
+          <div class="phase-title" style="color:var(--purple);">1,000件以上 → Fine-tuning / DeSciへ</div>
+          <div class="phase-desc">猫健康特化モデルの訓練。コミュニティ所有データとして価値化。</div>
+          <div class="phase-items">
+            <span class="phase-item">猫健康特化Fine-tuning</span>
+            <span class="phase-item">データDAO（コミュニティ所有）</span>
+            <span class="phase-item">研究機関への提供（DeSci）</span>
+          </div>
+        </div>
+        <div class="phase-timing">1,000件達成後</div>
+      </div>
+    </div>
+
+    <div class="callout callout-brand">
+      <p>
+        <strong>ユーザーへの透明性：</strong>
+        「あなたの質問と回答は猫博士の学習データとしてコミュニティで共有されます」をデモページ・ナレッジページに表示済み。
+        個人情報は含まない。この透明性がコミュニティへの信頼を生む。
+      </p>
+    </div>
+  </section>
+
+  <hr />
+
+  <!-- Footer -->
+  <div style="margin-top:48px; padding-top:24px; border-top:1px solid var(--border); text-align:center;">
+    <div style="font-size:12px; color:var(--dim); font-family:monospace; line-height:2;">
+      NEKOMICHI-PIVOT.html &nbsp;·&nbsp; 2026-06-01（Section 10追加）<br>
+      ビジネスプロデューサー（Claude）× 事業オーナー の戦略議論記録<br>
+      関連ドキュメント：NEKOMICHI-ARCHITECTURE.html &nbsp;/&nbsp; CLAUDE-SETUP-GUIDE.html
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
